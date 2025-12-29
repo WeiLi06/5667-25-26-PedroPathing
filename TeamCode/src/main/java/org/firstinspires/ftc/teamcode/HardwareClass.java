@@ -17,4 +17,8 @@ public class HardwareClass {
         vision = new VisionTest(hMap, true, telemetry);
 
     }
+
+    public void SetDrivePower(double drive, double turn, double strafe){
+
+    }
 }

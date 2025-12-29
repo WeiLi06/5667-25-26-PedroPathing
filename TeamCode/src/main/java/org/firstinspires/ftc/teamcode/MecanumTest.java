@@ -36,8 +36,16 @@ public class MecanumTest extends OpMode {
         double drive = gamepad1.left_stick_y;
         hard.vision.readAprilTag();
 
-        if (gamepad1.a && hard.vision.readAprilTag()){
-            turn+=0.1*Math.sqrt(Math.abs(hard.vision.bearing))*(hard.vision.bearing/(Math.abs(hard.vision.bearing)));
+        if (gamepad1.a && hard.vision.readAprilTag()&&(Math.abs(hard.vision.bearing)>1)){
+            turn+=0.05*Math.sqrt(Math.abs(hard.vision.bearing))*(hard.vision.bearing/(Math.abs(hard.vision.bearing)));
+            drive+=.01*hard.vision.range-120;
+        }
+
+        if (turn>0){
+            turn+=0.05;
+        }
+        if (turn<0){
+            turn-=0.05;
         }
 
         double[] speeds = {

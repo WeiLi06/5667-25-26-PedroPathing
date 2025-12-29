@@ -1,8 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
+@TeleOp
 public class FeedForwardTuner extends OpMode {
 
     HardwareClass hard;
@@ -10,6 +11,10 @@ public class FeedForwardTuner extends OpMode {
     double turn=0;
     double strafe=0;
     double drive=0;
+    int stepIndex = 0;
+
+    boolean rBumpPressed=false;
+    boolean lBumpPressed=false;
 
 
     @Override
@@ -31,13 +36,19 @@ public class FeedForwardTuner extends OpMode {
     public void loop() {
 
         double[] steps = {.2, .05, .01};
-        int stepIndex = 0;
 
 
-        if (gamepad1.rightBumperWasPressed()){
+        if (gamepad1.right_bumper&&!rBumpPressed){
             stepIndex+=1;
-        } else if (gamepad1.leftBumperWasPressed()) {
+            rBumpPressed=true;
+        } else if (!gamepad1.right_bumper){
+            rBumpPressed=false;
+        }
+        if (gamepad1.left_bumper&&!lBumpPressed){
             stepIndex-=1;
+            lBumpPressed=true;
+        } else if (!gamepad1.left_bumper){
+            lBumpPressed=false;
         }
 
         if (stepIndex >=steps.length){
@@ -82,6 +93,15 @@ public class FeedForwardTuner extends OpMode {
         hard.fr.setPower(-speeds[1]);
         hard.bl.setPower(speeds[2]);
         hard.br.setPower(-speeds[3]);
+
+        telemetry.addData("Drive", drive);
+        telemetry.addData("Turn", turn);
+        telemetry.addData("Strafe", strafe);
+        telemetry.addData("Step Size", steps[stepIndex]);
+        telemetry.addData("Step Index", stepIndex);
+        telemetry.addData("Left Bumper Status", gamepad1.left_bumper);
+        telemetry.addData("Right Bumper Status", gamepad1.right_bumper);
+        telemetry.update();
 
     }
 
