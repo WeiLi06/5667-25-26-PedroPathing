@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -14,6 +15,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+
 public class HardwareClass {
 
     DcMotorEx fr, fl, br, bl, outtake,intake;
@@ -21,6 +23,10 @@ public class HardwareClass {
     Servo pusher, revolver;
     VisionTest vision;
     NormalizedColorSensor cs1;
+    ColorRangeSensor cs2;
+
+
+
     public HardwareClass(HardwareMap hMap, Telemetry telemetry ){
         fr=hMap.get(DcMotorEx.class, "fr");
         fl=hMap.get(DcMotorEx.class, "fl");
@@ -34,9 +40,12 @@ public class HardwareClass {
         vision = new VisionTest(hMap, true, telemetry);
 
         cs1=hMap.get(NormalizedColorSensor.class, "cs1");
+        cs2=hMap.get(ColorRangeSensor.class, "cs2");
 
         fr.setDirection(DcMotorSimple.Direction.REVERSE);
         br.setDirection(DcMotorSimple.Direction.REVERSE);
+
+
 
         pusher.setPosition(.5);
 
@@ -80,7 +89,7 @@ public class HardwareClass {
 
     public float[] GetColors(){
         NormalizedRGBA colors = cs1.getNormalizedColors();
-        float[] clr = {colors.red, colors.green, colors.blue};
-        return clr;
+        return new float[]{colors.red, colors.green, colors.blue};
+
     }
 }

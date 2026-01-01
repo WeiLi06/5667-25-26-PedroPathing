@@ -76,6 +76,9 @@ public class MecanumTest extends OpMode {
 
         hard.SetDrivePower(drive,turn,strafe);
         hard.Revolve(revolverIndex);
+        telemetry.addData("R", hard.GetColors()[0]);
+        telemetry.addData("G", hard.GetColors()[1]);
+        telemetry.addData("B", hard.GetColors()[2]);
     }
 }
 
