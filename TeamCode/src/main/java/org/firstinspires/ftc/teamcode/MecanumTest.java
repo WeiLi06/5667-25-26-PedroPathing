@@ -3,11 +3,15 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp
 public class MecanumTest extends OpMode {
 //    DcMotor  fr, fl, br, bl;
     HardwareClass hard;
+    ElapsedTime pushTimer = new ElapsedTime();
+    boolean pushBool=false;
+    int revolverIndex=0;
 //    VisionTest vision;
     @Override
     public void init(){
@@ -34,6 +38,7 @@ public class MecanumTest extends OpMode {
         double turn =  -(gamepad1.right_trigger - gamepad1.left_trigger);
         double strafe = -gamepad1.left_stick_x;
         double drive = gamepad1.left_stick_y;
+
         hard.vision.readAprilTag();
 
         if (gamepad1.a && hard.vision.readAprilTag()&&(Math.abs(hard.vision.bearing)>1)){
@@ -48,22 +53,29 @@ public class MecanumTest extends OpMode {
             turn-=0.05;
         }
 
-        double[] speeds = {
-                (drive + strafe + turn),
-                (drive - strafe - turn),
-                (drive - strafe + turn),
-                (drive + strafe - turn)
-        };
-
-        if (gamepad1.a && hard.vision.readAprilTag()){
-            hard.vision.readAprilTag();
-
+        if (gamepad1.bWasPressed()){
+            hard.Push();
+            pushTimer.reset();
+            pushBool=true;
+        } else if (pushBool&&pushTimer.seconds()>=1){
+            hard.Unpush();
+            pushBool=false;
         }
 
-        hard.fl.setPower(speeds[0]);
-        hard.fr.setPower(-speeds[1]);
-        hard.bl.setPower(speeds[2]);
-        hard.br.setPower(-speeds[3]);
+        if(gamepad1.dpadLeftWasPressed()){
+            revolverIndex+=1;
+        } else if (gamepad1.dpadRightWasPressed()) {
+            revolverIndex-=1;
+        }
+
+        if (revolverIndex >=3){
+            revolverIndex = 0;
+        } else if (revolverIndex<0){
+            revolverIndex = 2;
+        }
+
+        hard.SetDrivePower(drive,turn,strafe);
+        hard.Revolve(revolverIndex);
     }
 }
 
